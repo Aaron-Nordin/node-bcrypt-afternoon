@@ -6,7 +6,7 @@ const authCtrl = require("./controllers/authController")
 const { SERVER_PORT, CONNECTION_STRING, SESSION_SECRET } = process.env;
 
 const app = express();
-app.use(express(JSON));
+app.use(express.json());
 
 massive(CONNECTION_STRING)
   .then(db => {
@@ -29,4 +29,4 @@ app.use(
 
 //----------------------------ENDPOINTS----------------------------------
 
-app.post("/api/register", authCtrl.register)
+app.post("/auth/register", authCtrl.register)
