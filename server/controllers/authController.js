@@ -1,7 +1,6 @@
 const bcrypt = require("bcryptjs");
 
 module.exports = {
-    
   //-------------------------REGISTER--------------------------------
 
   register: async (req, res) => {
@@ -48,5 +47,12 @@ module.exports = {
       username: user.username
     };
     return res.send(req.session.user);
+  },
+
+  //-------------------------LOGOUT---------------------------------
+
+  logout: async (req, res) => {
+    req.session.destroy()
+    res.sendStatus(200)
   }
 };
