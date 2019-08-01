@@ -1,6 +1,9 @@
 const bcrypt = require("bcryptjs");
 
 module.exports = {
+    
+  //-------------------------REGISTER--------------------------------
+
   register: async (req, res) => {
     const { username, password, isAdmin } = req.body;
     const db = req.app.get("db");
@@ -19,5 +22,31 @@ module.exports = {
       id: user.id
     };
     res.status(201).send(req.session.user);
+  },
+
+  //-------------------------LOGIN----------------------------------
+
+  login: async (req, res) => {
+    const { username, password } = req.body;
+    const db = req.app.get("db");
+    const foundUser = await db.get_user([username]);
+    const user = foundUser[0];
+    if (!user) {
+      return res
+        .status(409)
+        .send(
+          "User not found. Please register as a new user before logging in."
+        );
+    }
+    const isAuthenticated = bcrypt.compareSync(password, user.hash);
+    if (!isAuthenticated) {
+      return res.status(403).send("Incorrect password");
+    }
+    req.session.user = {
+      isAdmin: user.isAdmin,
+      id: user.id,
+      username: user.username
+    };
+    return res.send(req.session.user);
   }
 };
